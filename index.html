@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Esporto - Free Fire Tournament Registration. Join our weekly tournaments and compete for prizes. ₹30 registration fee.">
   <title>Esporto - Free Fire Tournament</title>
   <link rel="stylesheet" href="style.css" />
 </head>
@@ -28,20 +29,31 @@
     <ol>
       <li>Registration only between Monday to Friday.</li>
       <li>Fee must be paid online during registration.</li>
-      <li>Venue details sent after registration.</li>
+      <li>Venue details sent after registration approval.</li>
       <li>Max 200 players/week – registration paused after limit.</li>
       <li>No refunds if registration is canceled or player is absent.</li>
     </ol>
+    <p><em>Registration confirmed after manual verification.</em></p>
+  </section>
+
+  <section class="payment">
+    <h2>Payment Details</h2>
+    <p>Pay <strong>₹30</strong> using UPI and upload the payment screenshot to complete your registration.</p>
+    <div class="qr-container">
+      <p><strong>UPI QR Code:</strong></p>
+      <!-- Replace with actual QR code image -->
+      <p><em>UPI: [Your UPI ID]</em></p>
+    </div>
   </section>
 
   <section class="register">
     <h2>Register Now</h2>
-    <form id="registrationForm">
+    <form id="registrationForm" enctype="multipart/form-data">
       <input type="text" name="name" placeholder="Your Name" required />
-      <input type="email" name="email" placeholder="Email" required />
-      <input type="text" name="phone" placeholder="Phone Number" required />
       <input type="text" name="uid" placeholder="Free Fire UID" required />
-      <button type="submit">Register & Pay ₹30</button>
+      <label for="screenshot">Upload Payment Screenshot:</label>
+      <input type="file" name="screenshot" id="screenshot" accept="image/*" required />
+      <button type="submit">Submit Registration</button>
     </form>
     <p id="formMessage"></p>
   </section>
@@ -52,10 +64,45 @@
     <p>Phone: 9822572219</p>
   </section>
 
+  <section class="legal">
+    <h2>Legal</h2>
+    <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms & Conditions</a></p>
+  </section>
+
   <footer>
     <p>&copy; 2025 Esporto Tournament</p>
   </footer>
 
-  <script src="script.js"></script>
+  <script>
+    const form = document.getElementById('registrationForm');
+    const messageBox = document.getElementById('formMessage');
+    const BACKEND_URL = 'https://esporto-backend.onrender.com';
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(form);
+      
+      try {
+        const response = await fetch(BACKEND_URL + '/register', {
+          method: 'POST',
+          body: formData
+        });
+        
+        if (response.ok) {
+          const result = await response.text();
+          messageBox.style.color = 'green';
+          messageBox.innerHTML = result;
+          form.reset();
+        } else {
+          messageBox.style.color = 'red';
+          messageBox.innerHTML = 'Error: ' + response.statusText;
+        }
+      } catch (error) {
+        messageBox.style.color = 'red';
+        messageBox.innerHTML = 'Error submitting form: ' + error.message;
+      }
+    });
+  </script>
 </body>
 </html>
